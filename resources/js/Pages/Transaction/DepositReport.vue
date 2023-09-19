@@ -4,7 +4,7 @@ import Badge from "@/Components/Badge.vue";
 import Label from "@/Components/Label.vue";
 import InputSelect from "@/Components/InputSelect.vue";
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
-import {ref} from "vue";
+import {ref, watchEffect} from "vue";
 import InputIconWrapper from "@/Components/InputIconWrapper.vue";
 import Input from "@/Components/Input.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -14,6 +14,8 @@ import {library} from "@fortawesome/fontawesome-svg-core";
 import {transactionFormat} from "@/Composables/index.js";
 import {TailwindPagination} from "laravel-vue-pagination";
 import Loading from "@/Components/Loading.vue";
+import {usePage} from "@inertiajs/vue3";
+import Action from "@/Pages/Transaction/Deposit/Action.vue";
 
 library.add(faSearch,faX,faRotateRight);
 const { getChannelName, formatDate, getStatusClass, formatAmount, formatType } = transactionFormat();
@@ -22,15 +24,28 @@ function refreshTable() {
     getResults();
 }
 
+watchEffect(() => {
+    if (usePage().props.toast !== null) {
+        refreshTable();
+    }
+});
+
 const formatter = ref({
     date: 'YYYY-MM-DD',
     month: 'MM'
 });
+const activeComponent = ref("pending"); // 'pending' is initially active
 
 const submitSearch = async () => {
     const dateRange = date.value.split(' ~ ');
 
     await getResults(1, type.value, dateRange, search.value);
+};
+
+const setActiveComponent = async (component) => {
+    activeComponent.value = component;
+
+    await getResults();
 };
 
 function clearField() {
@@ -43,6 +58,7 @@ function handleKeyDown(event) {
     }
 }
 
+const depositPending = ref({data: []});
 const depositHistory = ref({data: []});
 const totalDeposit = ref('');
 const type = ref('');
@@ -73,6 +89,7 @@ const getResults = async (page = 1, type = '',  dateRange, search = '') => {
 
         const response = await axios.get(url);
         depositHistory.value = response.data.deposits;
+        depositPending.value = response.data.depositPending;
         totalDeposit.value = response.data.totalDeposit;
     } catch (error) {
         console.error(error);
@@ -144,11 +161,11 @@ const paginationActiveClass = [
                     <InputSelect
                         class="block w-full text-sm"
                         v-model="type"
-                        placeholder="All"
+                        placeholder="Select Deposit Method"
                     >
+                        <option value="">All</option>
                         <option value="bank">Bank Transfer</option>
                         <option value="crypto">Cryptocurrency</option>
-                        <option value="fpx">FPX</option>
                     </InputSelect>
                 </div>
                 <div class="space-y-2">
@@ -214,6 +231,25 @@ const paginationActiveClass = [
             </div>
         </form>
 
+        <div class="grid grid-cols-2 gap-4 w-full md:w-1/2">
+            <Button
+                variant="primary-opacity"
+                class="px-6 border border-blue-800 justify-center mt-4 focus:ring-0"
+                :class="{ 'bg-transparent': activeComponent !== 'pending', 'dark:bg-[#007BFF] dark:text-white': activeComponent === 'pending' }"
+                @click="setActiveComponent('pending')"
+            >
+                Pending Transaction
+            </Button>
+            <Button
+                variant="primary-opacity"
+                class="px-6 border border-blue-800 justify-center mt-4 focus:ring-0"
+                :class="{ 'bg-transparent': activeComponent !== 'history', 'dark:bg-[#007BFF] dark:text-white': activeComponent === 'history' }"
+                @click="setActiveComponent('history')"
+            >
+                Transaction History
+            </Button>
+        </div>
+
         <div class="p-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 mt-6">
             <div class="flex justify-end">
                 <font-awesome-icon
@@ -224,10 +260,11 @@ const paginationActiveClass = [
                 />
             </div>
             <div class="relative overflow-x-auto sm:rounded-lg">
-                <div v-if="isLoading" class="w-full flex justify-center my-12">
+                <!-- Deposit Pending -->
+                <div v-if="isLoading && activeComponent === 'pending'" class="w-full flex justify-center my-12">
                     <Loading />
                 </div>
-                <table v-else class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <table v-else class="w-full text-sm text-left text-gray-500 dark:text-gray-400" v-if="activeComponent === 'pending'">
                     <thead class="text-xs font-bold text-gray-700 uppercase bg-gray-50 dark:bg-transparent dark:text-white text-center">
                     <tr>
                         <th scope="col" class="px-4 py-3">
@@ -243,16 +280,84 @@ const paginationActiveClass = [
                             Deposit Method
                         </th>
                         <th scope="col" class="px-2 py-3">
-                            Payment Gateway
-                        </th>
-                        <th scope="col" class="px-2 py-3">
                             Transaction ID
                         </th>
                         <th scope="col" class="px-4 py-3">
                             Deposit Amount
                         </th>
                         <th scope="col" class="px-4 py-3">
-                            Payment Charges
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-if="depositPending.data.length === 0">
+                        <th colspan="8" class="py-4 text-lg text-center">
+                            No Pending
+                        </th>
+                    </tr>
+                    <tr v-for="deposit in depositPending.data" :key="deposit.id" class="bg-white odd:dark:bg-transparent even:dark:bg-dark-eval-0 text-xs font-thin text-gray-900 dark:text-white text-center">
+                        <th scope="row" class="px-6 py-4 font-thin rounded-l-full">
+                            {{ deposit.of_user.first_name }}
+                        </th>
+                        <th class="px-6 py-4">
+                            {{ deposit.of_user.email }}
+                        </th>
+                        <th>
+                            {{ formatDate(deposit.created_at) }}
+                        </th>
+                        <th>
+                            {{ getChannelName(deposit.channel) }}
+                        </th>
+                        <th>
+                            {{ deposit.payment_id }}
+                        </th>
+                        <th>
+                            $ {{ formatAmount(deposit.amount) }}
+                        </th>
+                        <th class="px-6 py-4 font-thin rounded-r-full">
+                            <Action
+                                :deposit="deposit"
+                            />
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="flex justify-end mt-4" v-if="activeComponent === 'pending'">
+                    <TailwindPagination
+                        :item-classes=paginationClass
+                        :active-classes=paginationActiveClass
+                        :data="depositPending"
+                        :limit=1
+                        :keepLength="true"
+                        @pagination-change-page="handlePageChange"
+                    />
+                </div>
+
+                <!-- Deposit History -->
+                <div v-if="isLoading && activeComponent === 'history'" class="w-full flex justify-center my-12">
+                    <Loading />
+                </div>
+                <table v-else class="w-full text-sm text-left text-gray-500 dark:text-gray-400" v-if="activeComponent === 'history'">
+                    <thead class="text-xs font-bold text-gray-700 uppercase bg-gray-50 dark:bg-transparent dark:text-white text-center">
+                    <tr>
+                        <th scope="col" class="px-4 py-3">
+                            Name
+                        </th>
+                        <th scope="col" class="px-4 py-3">
+                            Email
+                        </th>
+                        <th scope="col" class="px-4 py-3">
+                            Date
+                        </th>
+                        <th scope="col" class="px-4 py-3">
+                            Deposit Method
+                        </th>
+                        <th scope="col" class="px-2 py-3">
+                            Transaction ID
+                        </th>
+                        <th scope="col" class="px-4 py-3">
+                            Deposit Amount
                         </th>
                         <th scope="col" class="px-4 py-3">
                             Status
@@ -274,16 +379,10 @@ const paginationActiveClass = [
                             {{ getChannelName(deposit.channel) }}
                         </th>
                         <th>
-                            {{ formatType(deposit.gateway) }}
-                        </th>
-                        <th>
                             {{ deposit.payment_id }}
                         </th>
                         <th>
                             $ {{ formatAmount(deposit.amount) }}
-                        </th>
-                        <th>
-                            {{ deposit.payment_charges }}
                         </th>
                         <th class="px-6 py-2 font-thin rounded-r-full">
                             <Badge :status="getStatusClass(deposit.status)">{{ deposit.status }}</Badge>
@@ -291,7 +390,7 @@ const paginationActiveClass = [
                     </tr>
                     </tbody>
                 </table>
-                <div v-if="!isLoading" class="flex md:flex-row flex-col md:justify-between mt-4">
+                <div v-if="activeComponent === 'history' && !isLoading" class="flex md:flex-row flex-col md:justify-between mt-4">
                     <div class="ml-1 my-4">
                         <span class="text-sm dark:text-dark-eval-4">Total Success Deposit:</span> $ {{ formatAmount(totalDeposit) }}
                     </div>

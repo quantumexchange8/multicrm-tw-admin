@@ -139,7 +139,6 @@ const paginationActiveClass = [
                         v-model="type"
                         placeholder="All"
                     >
-                        <option value="bank">Bank Transfer</option>
                         <option value="crypto">Cryptocurrency</option>
                     </InputSelect>
                 </div>
@@ -248,9 +247,6 @@ const paginationActiveClass = [
                         <th scope="col" class="px-4 py-3">
                             Withdrawal Amount
                         </th>
-                        <th scope="col" class="px-4 py-3">
-                            Payment Charges
-                        </th>
                         <th scope="col" class="px-4 py-3 w-56">
                             Action
                         </th>
@@ -277,9 +273,6 @@ const paginationActiveClass = [
                         </th>
                         <th>
                             $ {{ formatAmount(withdrawal.amount) }}
-                        </th>
-                        <th>
-                            {{ withdrawal.payment_charges ?? '-' }}
                         </th>
                         <th class="py-2 font-thin rounded-r-full">
                             <Action
@@ -323,9 +316,6 @@ const paginationActiveClass = [
                             Withdrawal Amount
                         </th>
                         <th scope="col" class="px-4 py-3">
-                            Payment Charges
-                        </th>
-                        <th scope="col" class="px-4 py-3">
                             Status
                         </th>
                         <th scope="col" class="px-4 py-3">
@@ -354,9 +344,6 @@ const paginationActiveClass = [
                         </th>
                         <th>
                             $ {{ formatAmount(history.amount) }}
-                        </th>
-                        <th>
-                            {{ history.payment_charges ?? '-' }}
                         </th>
                         <th>
                             <Badge :status="getStatusClass(history.status)">{{ history.status }}</Badge>

@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\DepositsExport;
 use App\Models\Payment;
+use App\Models\TradingUser;
+use App\Models\User;
+use App\Services\ChangeTraderBalanceType;
+use App\Services\CTraderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
@@ -22,12 +26,12 @@ class DepositController extends Controller
         $requestDate = $request->date;
         $type = $request->type;
 
-        $depositsQuery = Payment::query()->with('ofUser')
+        $depositsQuery = Payment::query()->with(['ofUser', 'media'])
             ->where('category', 'payment')
             ->where('type', 'Deposit');
 
-        if (auth()->user()->remark == "vietnam plan") {
-            $depositsQuery =  $depositsQuery->whereRelation('ofUser', 'remark', "vietnam plan");
+        if (auth()->user()->remark == "TW Test Trading Group") {
+            $depositsQuery =  $depositsQuery->whereRelation('ofUser', 'remark', "TW Test Trading Group");
         }
 
         if ($type) {
@@ -54,16 +58,60 @@ class DepositController extends Controller
             return Excel::download(new DepositsExport($depositsQuery), Carbon::now() . '-deposits-report.xlsx');
         }
 
-        $paginatedDeposits = $depositsQuery->latest()->paginate(10);
-
+        $paginatedDeposits = clone $depositsQuery;
         $totalDepositQuery = clone $depositsQuery;
+
+         $depositPending = $depositsQuery
+            ->where('status', 'Submitted')
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $paginatedDeposits =  $paginatedDeposits
+            ->whereNot('status', 'Submitted')
+            ->orderByDesc('approval_date')
+            ->paginate(10)
+            ->withQueryString();
+
         $totalDeposit = $totalDepositQuery->where('status', 'Successful')
             ->get()
             ->sum('amount');
 
         return response()->json([
             'deposits' => $paginatedDeposits,
+            'depositPending' => $depositPending,
             'totalDeposit' => $totalDeposit,
         ]);
+    }
+
+    public function deposit_approval(Request $request)
+    {
+        $payment = Payment::find($request->id);
+        $status = $request->status == "approve" ? "Successful" : "Rejected";
+        $payment->status = $status;
+        $payment->description = $request->comment;
+        $payment->approval_date = Carbon::today();
+        $payment->save();
+
+        if ($payment->status == "Successful") {
+            try {
+                $trade = (new CTraderService)->createTrade($payment->to, $payment->amount, $payment->comment, ChangeTraderBalanceType::DEPOSIT);
+                $payment->ticket = $trade->getTicket();
+
+                $user = User::find($payment->user_id);
+                $user->total_deposit += $payment->amount;
+                $user->save();
+
+                return redirect()->back()->with('toast', 'Successfully Approved Deposit Request');
+            } catch (\Throwable $e) {
+                if ($e->getMessage() == "Not found") {
+                    TradingUser::firstWhere('meta_login', $payment->to)->update(['acc_status' => 'Inactive']);
+                }
+                \Log::error($e->getMessage() . " " . $payment->payment_id);
+            }
+        }
+
+        return redirect()->back()->with('toast', 'Successfully Rejected Deposit Request');
+
     }
 }

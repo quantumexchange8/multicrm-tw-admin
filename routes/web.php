@@ -31,7 +31,6 @@ use App\Http\Controllers\NetworkController;
 Route::get('/', function () {
     return redirect()->route('login');
 });
-Route::post('payout/callback', [WithdrawalController::class, 'updateWithdrawalStatus']);
 
 Route::middleware('auth')->middleware('role:admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -111,6 +110,7 @@ Route::middleware('auth')->middleware('role:admin')->group(function () {
     Route::prefix('transaction')->group(function () {
         Route::get('/deposit_report', [DepositController::class, 'deposit_report'])->name('transaction.deposit_report');
         Route::get('/withdrawal_report', [WithdrawalController::class, 'withdrawal_report'])->name('transaction.withdrawal_report');
+        Route::post('/deposit_approval', [DepositController::class, 'deposit_approval'])->name('transaction.deposit_approval');
         Route::post('/withdrawal_approval', [WithdrawalController::class, 'withdrawal_approval'])->name('transaction.withdrawal_approval');
         Route::get('/internal_transfer_report', [InternalTransferController::class, 'internal_transfer_report'])->name('transaction.internal_transfer_report');
         Route::get('/wallet_report', [WalletController::class, 'wallet_report'])->name('transaction.wallet_report');

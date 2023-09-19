@@ -1,12 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import Button from '@/Components/Button.vue'
-import { GithubIcon } from '@/Components/Icons/brands'
+import {transactionFormat} from "@/Composables/index.js";
 
 defineProps({
     totalDeposit: [String, Number],
     totalWithdrawal: [String, Number],
 })
+const { formatAmount } = transactionFormat();
 
 </script>
 
@@ -25,15 +25,15 @@ defineProps({
             <fieldset
                 class="border-2 border-[#05C46B] p-4 rounded-lg shadow-md text-center bg-gradient-to-b from-transparent to-[#05c46b33]"
             >
-                <legend class="text-xl px-4 uppercase font-semibold">Total Deposit {{ $page.totalApprovedDeposit}}</legend>
-                <p class="text-4xl">$ {{ totalDeposit }}</p>
+                <legend class="text-xl px-4 uppercase font-semibold">Total Deposit</legend>
+                <p class="text-4xl">$ {{ formatAmount(totalDeposit) }}</p>
             </fieldset>
 
             <fieldset
                 class="border-2 border-[#FF3F34] p-4 rounded-lg shadow-md text-center bg-gradient-to-b from-transparent to-[#ff3f3433]"
             >
                 <legend class="text-xl px-4 uppercase font-semibold">Total Withdrawal</legend>
-                <p class="text-4xl">$ {{ totalWithdrawal }}</p>
+                <p class="text-4xl">$ {{ formatAmount(totalWithdrawal) }}</p>
             </fieldset>
 
         </div>
