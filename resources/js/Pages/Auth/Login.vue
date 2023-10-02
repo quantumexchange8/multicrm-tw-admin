@@ -35,7 +35,7 @@ function closeDrawer() {
 </script>
 
 <template>
-    <GuestLayout title="Log in">
+    <GuestLayout :title="$t('public.Log in')">
         <ValidationErrors class="mb-4" />
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -50,27 +50,27 @@ function closeDrawer() {
                     <div class="flex justify-center">
                         <img src="/assets/icon/email.png" alt="email_icon"/>
                     </div>
-                    <Input id="email" type="email" class="block w-full placeholder:text-center" placeholder="Email" v-model="form.email" autofocus autocomplete="username" />
+                    <Input id="email" type="email" class="block w-full placeholder:text-center" :placeholder="$t('public.Email')" v-model="form.email" autofocus autocomplete="username" />
                 </div>
 
                 <div class="space-y-2">
                     <div class="flex justify-center">
                         <img src="/assets/icon/password.png" alt="password_icon"/>
                     </div>
-                    <Input id="password" type="password" class="block w-full placeholder:text-center" placeholder="Password" v-model="form.password" required autocomplete="current-password" />
+                    <Input id="password" type="password" class="block w-full placeholder:text-center" :placeholder="$t('public.Password')" v-model="form.password" required autocomplete="current-password" />
                 </div>
 
                 <div class="flex items-center justify-between">
                     <label class="flex items-center">
                         <Checkbox name="remember" v-model:checked="form.remember" />
-                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                        <span class="ml-2 text-sm text-gray-600">{{ $t('public.Remember me') }}</span>
                     </label>
                 </div>
 
                 <div>
                     <Button class="justify-center gap-2 w-full" :disabled="form.processing" v-slot="{iconSizeClasses}">
                         <LoginIcon aria-hidden="true" :class="iconSizeClasses" />
-                        <span>Log in</span>
+                        <span>{{ $t('public.Log in') }}</span>
                     </Button>
                 </div>
 
