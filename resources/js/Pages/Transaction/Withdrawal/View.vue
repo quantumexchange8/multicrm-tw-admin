@@ -52,7 +52,7 @@ function copyAddress() {
             <h3 class="text-4xl mb-2 font-medium text-gray-900 dark:text-gray-100">$ {{ formatAmount(withdrawal.of_user.cash_wallet) }}</h3>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 md:gap-4 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-5 md:gap-4 mt-4">
             <div class="space-y-2 mb-4 md:mb-0">
                 <Label>{{ withdrawal.channel === 'bank' ? 'Bank Account' : 'Crypto Network' }}</Label>
                 <Input
@@ -61,7 +61,7 @@ function copyAddress() {
                     :model-value="withdrawal.account_type"
                 />
             </div>
-            <div class="space-y-2 col-span-3">
+            <div class="space-y-2 col-span-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-2">
                         <Label>{{ withdrawalLabel }}</Label>
