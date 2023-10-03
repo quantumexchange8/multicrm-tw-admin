@@ -39,7 +39,7 @@ const closeModal = () => {
 </script>
 
 <template>
-    <h2 class="text-lg mb-2 font-medium text-gray-900 dark:text-gray-100">Edit Rebate Structure</h2>
+    <h2 class="text-lg mb-2 font-medium text-gray-900 dark:text-gray-100">{{ $t('public.Edit Rebate Structure') }}</h2>
     <hr>
 
     <h3 class="text-lg mb-2 font-medium text-gray-900 dark:text-dark-eval-4 mt-6">IB: {{ ib.of_user.first_name }}</h3>
@@ -71,7 +71,7 @@ const closeModal = () => {
             <thead class="text-xs font-bold text-gray-700 uppercase bg-gray-50 dark:bg-transparent dark:text-white text-center">
             <tr class="uppercase">
                 <th scope="col" class="px-6 py-3 uppercase">
-                    Ib Name
+                    {{ $t('public.IB Name') }}
                 </th>
                 <th scope="col" class="px-2 py-3" v-for="uplineSymbolGroup in ib.symbol_groups">
                     {{ uplineSymbolGroup.symbol_group.name }} <br>
@@ -109,10 +109,10 @@ const closeModal = () => {
         </table>
         <div class="mt-6 flex justify-end gap-2">
         <Button variant="secondary" @click="closeModal">
-            Cancel
+            {{ $t('public.Cancel')}}
         </Button>
         <Button @click.prevent="submitForm">
-            Save
+            {{ $t('public.Save')}}
         </Button>
     </div>
     </div>

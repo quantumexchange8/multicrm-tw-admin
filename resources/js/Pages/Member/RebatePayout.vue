@@ -60,11 +60,11 @@ const reset = () => {
 </script>
 
 <template>
-    <AuthenticatedLayout title="Trading Account Listing">
+    <AuthenticatedLayout :title="$t('public.Trading Account Listing')">
         <template #header>
             <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <h2 class="text-xl font-semibold leading-tight">
-                    Rebate Payout
+                    {{ $t('public.Rebate Payout') }}
                 </h2>
             </div>
         </template>
@@ -85,7 +85,7 @@ const reset = () => {
                                 aria-hidden="true"
                             />
                         </template>
-                        <Input withIcon id="name" type="text" placeholder="Search by IB name or IB number" class="block w-full" v-model="form.search" @keydown="handleKeyDown" />
+                        <Input withIcon id="name" type="text" :placeholder="$t('public.Search by IB name or IB number')" class="block w-full" v-model="form.search" @keydown="handleKeyDown" />
                     </InputIconWrapper>
                     <button type="submit" class="absolute right-1 bottom-2 py-2.5 text-gray-500 hover:text-dark-eval-4 font-medium rounded-full w-8 h-8 text-sm"><font-awesome-icon
                         icon="fa-solid fa-x"
@@ -110,14 +110,14 @@ const reset = () => {
                         @click.prevent="submitSearch"
                         :disabled="form.processing"
                     >
-                        Search
+                        {{ $t('public.Search') }}
                     </Button>
                     <Button
                         variant="danger-opacity"
                         class="justify-center"
                         @click.prevent="reset"
                     >
-                        Reset
+                        {{ $t('public.Reset') }}
                     </Button>
                 </div>
 
@@ -130,7 +130,7 @@ const reset = () => {
                         :class="{ 'bg-transparent': activeComponent !== 'pending', 'dark:bg-[#007BFF] dark:text-white': activeComponent === 'pending' }"
                         @click="setActiveComponent('pending')"
                     >
-                        Pending Payout
+                        {{ $t('public.Pending Payout') }}
                     </Button>
                     <Button
                         variant="primary-opacity"
@@ -138,7 +138,7 @@ const reset = () => {
                         :class="{ 'bg-transparent': activeComponent !== 'history', 'dark:bg-[#007BFF] dark:text-white': activeComponent === 'history' }"
                         @click="setActiveComponent('history')"
                     >
-                        Payout History
+                        {{ $t('public.Payout History') }}
                     </Button>
                 </div>
             </div>

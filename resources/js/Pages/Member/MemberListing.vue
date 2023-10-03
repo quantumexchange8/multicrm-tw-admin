@@ -62,11 +62,11 @@ function getRole() {
 
 <template>
 
-    <AuthenticatedLayout title="Member Listing">
+    <AuthenticatedLayout :title="$t('public.Member Listing')">
         <template #header>
             <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <h2 class="text-xl font-semibold leading-tight">
-                    Member Listing
+                    {{ $t('public.Member Listing') }}
                 </h2>
             </div>
         </template>
@@ -80,7 +80,7 @@ function getRole() {
                     placeholder="Choose Role"
                 >
                     <option value="ib">IB</option>
-                    <option value="member">Member</option>
+                    <option value="member">{{ $t('public.Member') }}</option>
                 </InputSelect>
             </div>
             <div class="col-span-2 flex justify-between">
@@ -98,7 +98,7 @@ function getRole() {
                                 aria-hidden="true"
                             />
                         </template>
-                        <Input withIcon id="name" type="text" placeholder="Name / Email" class="block w-full" v-model="search" @keydown="handleKeyDown" />
+                        <Input withIcon id="name" type="text" :placeholder="$t('public.Name / Email')" class="block w-full" v-model="search" @keydown="handleKeyDown" />
                     </InputIconWrapper>
                     <button type="submit" class="absolute right-1 bottom-2 py-2.5 text-gray-500 hover:text-dark-eval-4 font-medium rounded-full w-8 h-8 text-sm"><font-awesome-icon
                         icon="fa-solid fa-x"
@@ -124,31 +124,31 @@ function getRole() {
                     <thead class="text-xs font-bold text-gray-700 uppercase bg-gray-50 dark:bg-transparent dark:text-white text-center">
                         <tr class="uppercase">
                             <th scope="col" class="px-6 py-3">
-                                Name
+                                {{ $t('public.Name') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Email
+                                {{ $t('public.Email') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Register Date
+                                {{ $t('public.Register Date') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Wallet Balance
+                                {{ $t('public.Wallet Balance') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Role
+                                {{ $t('public.Role') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Upline Email
+                                {{ $t('public.Upline Email') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Total Account
+                                {{ $t('public.Total Account') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Country
+                                {{ $t('public.Country') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Action
+                                {{ $t('public.Action') }}
                             </th>
                         </tr>
                     </thead>

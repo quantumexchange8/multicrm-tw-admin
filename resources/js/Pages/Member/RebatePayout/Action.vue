@@ -165,16 +165,16 @@ const getRebatePayoutInfo = async () => {
             @click.prevent="showConfirmation(list.total_revenue)"
             class="text-xs"
         >
-            Approve
+            {{ $t('public.Approve') }}
         </Button>
-        <Tooltip content="View" placement="top">
+        <Tooltip :content="$t('public.View')" placement="top">
             <Button
                 class="justify-center px-4 pt-2 mx-1 rounded-full w-7 h-7 focus:outline-none"
                 variant="primary-opacity"
                 @click="handleViewButton"
             >
                 <ViewIcon aria-hidden="true" class="w-5 h-5 absolute" />
-                <span class="sr-only">View</span>
+                <span class="sr-only">{{ $t('public.View') }}</span>
             </Button>
         </Tooltip>
     </div>
@@ -187,7 +187,7 @@ const getRebatePayoutInfo = async () => {
             <template v-if="modalComponent === 'ViewRebate'">
                 <div v-if="loading" class="w-full flex justify-center mt-4">
                     <div class="px-4 py-2 text-sm font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
-                        loading...
+                        {{ $t('public.loading...') }}
                     </div>
                 </div>
                 <PayoutDetails

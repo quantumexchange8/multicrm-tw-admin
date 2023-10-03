@@ -26,10 +26,10 @@ const getMediaUrlByCollection = (member, collectionName) => {
 
 <template>
     <div v-if="type !== 'history'">
-        <h2 class="text-lg mb-2 font-medium text-gray-900 dark:text-gray-100">View More Details</h2>
+        <h2 class="text-lg mb-2 font-medium text-gray-900 dark:text-gray-100">{{ $t("public.View More Details") }}</h2>
         <hr>
         <div class="flex justify-center flex-col text-center mt-8 space-y-2">
-            <h4 class="text-lg font-medium text-gray-900 dark:text-dark-eval-4">Cash Wallet Balance</h4>
+            <h4 class="text-lg font-medium text-gray-900 dark:text-dark-eval-4">{{ $t('public.Cash Wallet Balance') }}</h4>
             <h3 class="text-4xl mb-2 font-medium text-gray-900 dark:text-gray-100">$ {{ formatAmount(deposit.of_user.cash_wallet) }}</h3>
         </div>
 

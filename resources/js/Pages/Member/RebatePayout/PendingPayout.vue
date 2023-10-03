@@ -151,32 +151,32 @@ async function approveSelectedRebatePayout() {
                 />
             </th>
             <th scope="col" class="px-6 py-3">
-                Date
+                {{ $t('public.Date') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                IB Name
+                {{ $t('public.IB Name') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Account Number
+                {{ $t('public.Account Number') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Account Type
+                {{ $t('public.Account Type') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Total Volume (LOTS)
+                {{ $t('public.Total Volume (LOTS)') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Total Payout
+                {{ $t('public.Total Payout') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Action
+                {{ $t('public.Action') }}
             </th>
         </tr>
         </thead>
         <tbody>
         <tr v-if="lists.data.length === 0">
             <th colspan="8" class="py-4 text-lg text-center">
-                No Pending
+                {{ $t('public.No Pending') }}
             </th>
         </tr>
         <tr v-for="list in lists.data" :key="list.ib_account_types_id" class="bg-white odd:dark:bg-transparent even:dark:bg-dark-eval-0 text-xs font-thin text-gray-900 dark:text-white text-center">
@@ -224,7 +224,7 @@ async function approveSelectedRebatePayout() {
             class="float-right text-xs"
             @click="confirmAction"
         >
-            Confirm
+            {{ $t('public.Confirm') }}
         </Button>
     </div>
 </template>

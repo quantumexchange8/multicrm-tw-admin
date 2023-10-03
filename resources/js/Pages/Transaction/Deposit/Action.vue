@@ -40,7 +40,7 @@ const closeModal = () => {
             class="text-xs justify-center"
             @click="openDepositActionModal(deposit.id, 'approval', 'Approve')"
         >
-            Approve
+            {{ $t('public.Approve') }}
         </Button>
         <Button
             v-if="type !== 'history'"
@@ -48,20 +48,20 @@ const closeModal = () => {
             class="text-xs justify-center"
             @click="openDepositActionModal(deposit.id, 'approval', 'Reject')"
         >
-            Reject
+            {{ $t('public.Reject') }}
         </Button>
         <div
             v-if="deposit.media.length > 0"
             class="flex justify-center items-center"
         >
-            <Tooltip content="View" placement="top">
+            <Tooltip :content="$t('public.View')" placement="top">
                 <Button
                     class="justify-center px-4 pt-2 rounded-full w-7 h-7 focus:outline-none"
                     variant="primary-opacity"
                     @click="openDepositActionModal(deposit.id, 'view')"
                 >
                     <ViewIcon aria-hidden="true" class="w-5 h-5 absolute" />
-                    <span class="sr-only">View</span>
+                    <span class="sr-only">{{ $t('public.View') }}</span>
                 </Button>
             </Tooltip>
         </div>
