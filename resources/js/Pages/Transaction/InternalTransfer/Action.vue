@@ -76,7 +76,7 @@ const closeModal = () => {
                     />
                 </div>
                 <div class="space-y-2 mb-4 md:mb-0" v-if="history.type==='AccountToWallet' || history.type==='AccountToAccount'">
-                    <Label for="account_no_transfer">{{ $t('public.Account No To Transfer') }}</Label>
+                    <Label for="account_no_transfer">{{ $t('public.Account No. To Transfer') }}</Label>
                     <Input
                         id="account_no_transfer"
                         class="block w-full dark:border-0 text-xs"

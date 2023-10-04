@@ -64,7 +64,7 @@ class AnnouncementController extends Controller
             $announcement->addMedia($request->image)->toMediaCollection('announcement_image');
         }
 
-        return redirect()->back()->with('toast', 'The new announcement has been created!');
+        return redirect()->back()->with('toast', trans('public.The new announcement has been created!'));
     }
 
     public function edit_announcement(AnnouncementRequest $request): \Illuminate\Http\RedirectResponse
@@ -83,11 +83,11 @@ class AnnouncementController extends Controller
         ]);
 
         if($request->hasFile('image')) {
-            $announcement->clearMediaCollection('announcement_image');
+            $announcement->clearMediaCollection('announcement_image');  
             $announcement->addMedia($request->image)->toMediaCollection('announcement_image');
         }
 
-        return redirect()->back()->with('toast', 'The announcement details have been saved!');
+        return redirect()->back()->with('toast', trans('public.The announcement details have been saved!'));
     }
 
     public function delete_announcement(Request $request): \Illuminate\Http\RedirectResponse
@@ -96,6 +96,6 @@ class AnnouncementController extends Controller
 
         $announcement->delete();
 
-        return redirect()->back()->with('toast', 'The announcement details have been deleted!');
+        return redirect()->back()->with('toast', trans('public.The announcement details have been deleted!'));
     }
 }

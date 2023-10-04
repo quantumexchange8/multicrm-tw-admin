@@ -102,7 +102,7 @@ class DepositController extends Controller
                 $user->total_deposit += $payment->amount;
                 $user->save();
 
-                return redirect()->back()->with('toast', 'Successfully Approved Deposit Request');
+                return redirect()->back()->with('toast', trans('public.Successfully Approved Deposit Request'));
             } catch (\Throwable $e) {
                 if ($e->getMessage() == "Not found") {
                     TradingUser::firstWhere('meta_login', $payment->to)->update(['acc_status' => 'Inactive']);
@@ -111,7 +111,7 @@ class DepositController extends Controller
             }
         }
 
-        return redirect()->back()->with('toast', 'Successfully Rejected Deposit Request');
+        return redirect()->back()->with('toast', trans('public.Successfully Rejected Deposit Request'));
 
     }
 }
