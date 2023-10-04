@@ -62,6 +62,9 @@ defineProps({
                 </Dropdown>
                 <slot />
             </div>
+            
         </main>
+        <PageFooter></PageFooter>
     </div>
+    
 </template>
