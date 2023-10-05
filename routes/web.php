@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\InternalTransferController;
 use App\Http\Controllers\PlatformConfigurationController;
 use App\Http\Controllers\SettingController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\NetworkController;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+Route::get('locale/{locale}', [GeneralController::class, 'setLang']);
 
 Route::middleware('auth')->middleware('role:admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

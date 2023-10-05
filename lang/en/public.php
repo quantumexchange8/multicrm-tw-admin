@@ -539,7 +539,6 @@ return [
     "DeleteWarning" => "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.",
     "Are you sure you want to delete your account?" => "Are you sure you want to delete your account?",
     "DeleteConfirmation" => "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.",
-    "Password" => "Password",
     "Update Password" => "Update Password",
     "Ensure your account is using a long, random password to stay secure." => "Ensure your account is using a long, random password to stay secure.",
     "Saved." => "Saved",
@@ -636,4 +635,7 @@ return [
     "The bank account details has been edited successfully!" => "The bank account details has been edited successfully!",
     "The cryptocurrency wallet details has been edited successfully!" => "The cryptocurrency wallet details has been edited successfully!",
     "The payment account has been deleted successfully" => "The payment account has been deleted successfully",
+    "Manage Pending Deposit" => "Manage Pending Deposit",
+    "Manage Pending Withdrawal" => "Manage Pending Withdrawal",
+    "Manage Pending Rebate" => "Manage Pending Rebate",
 ];

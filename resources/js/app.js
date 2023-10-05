@@ -23,7 +23,8 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
-            .use( CKEditor ).use(i18nVue, {
+            .use( CKEditor )
+            .use(i18nVue, {
                 resolve: async lang => {
                     const langs = import.meta.glob('../../lang/*.json');
                     if (typeof langs[`../../lang/${lang}.json`] == "undefined") return; //Temporary workaround

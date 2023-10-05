@@ -21,9 +21,9 @@ import Button from '@/Components/Button.vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
-import { ArrowsInnerIcon } from '@/Components/Icons/outline'
+import { LangIconDark, LangIconWhite } from '@/Components/Icons/outline'
+import {loadLanguageAsync} from "laravel-vue-i18n";
 
-const { isFullscreen, toggle: toggleFullScreen } = useFullscreen()
 
 onMounted(() => {
     document.addEventListener('scroll', handleScroll)
@@ -32,6 +32,15 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('scroll', handleScroll)
 })
+
+const changeLanguage = async (langVal) => {
+    try {
+        await loadLanguageAsync(langVal);
+        await axios.get(`/locale/${langVal}`);
+    } catch (error) {
+        console.error('Error changing locale:', error);
+    }
+};
 </script>
 
 <template>
@@ -89,26 +98,43 @@ onUnmounted(() => {
                 />
             </Button>
 
-            <Button
-                iconOnly
-                variant="secondary"
-                type="button"
-                @click="toggleFullScreen"
-                v-slot="{ iconSizeClasses }"
-                class="hidden md:inline-flex"
-                srText="Toggle dark mode"
-            >
-                <ArrowsExpandIcon
-                    v-show="!isFullscreen"
-                    aria-hidden="true"
-                    :class="iconSizeClasses"
-                />
-                <ArrowsInnerIcon
-                    v-show="isFullscreen"
-                    aria-hidden="true"
-                    :class="iconSizeClasses"
-                />
-            </Button>
+            <Dropdown align="right">
+                <template #trigger>
+                    <Button
+                        iconOnly
+                        variant="secondary"
+                        type="button"
+                        v-slot="{ iconSizeClasses }"
+                        class="hidden md:inline-flex"
+                        srText="Toggle dark mode"
+                    >
+                        <LangIconDark
+                            v-show="isDark"
+                            aria-hidden="true"
+                            :class="iconSizeClasses"
+                        />
+                        <LangIconWhite
+                            v-show="!isDark"
+                            aria-hidden="true"
+                            :class="iconSizeClasses"
+                        />
+                    </Button>
+                </template>
+                <template #content>
+                    <DropdownLink @click="changeLanguage('en')">
+                        <div class="inline-flex items-center gap-2">
+                            <img class="w-5 h-5 rounded-full" src="/assets/flags/gb.png" alt="Rounded Flag">
+                            English
+                        </div>
+                    </DropdownLink>
+                    <DropdownLink @click="changeLanguage('tw')">
+                        <div class="inline-flex items-center gap-2">
+                            <img class="w-5 h-5 rounded-full" src="/assets/flags/tw.png" alt="Rounded Flag">
+                            中文 (繁)
+                        </div>
+                    </DropdownLink>
+                </template>
+            </Dropdown>
 
             <!-- Dropdwon -->
             <Dropdown align="right" width="48">
