@@ -58,11 +58,13 @@ class MemberController extends Controller
             ->get();
 
         $accountTypes = AccountType::where('id', 1)->first();
+        $getMemberSel = User::whereIn('role', ['member', 'ib'])->pluck('email')->toArray();
 
         return Inertia::render('Member/MemberListing', [
             'members' => $members,
             'countries' => $countries,
             'accountTypes' => $accountTypes,
+            'getMemberSel' => $getMemberSel,
             'filters' => \Request::only(['search', 'role']),
         ]);
     }
@@ -635,6 +637,99 @@ class MemberController extends Controller
             'event' => 'impersonate',
         ]);
 
-        return Inertia::location("https://tw-member.qcgbroker.com/admin_login/{$hashedToken}");
+        return Inertia::location("https://login.qcgbroker.com/admin_login/{$hashedToken}");
+    }
+
+    public function transfer_upline(Request $request)
+    {
+        $user = User::find($request->id);
+        $newUpline = User::where('email', $request->new_upline);
+        $newUpline = $newUpline->first();
+
+        if ($request->new_upline && !$newUpline) {
+            throw ValidationException::withMessages(['new_upline' => 'Upline Not Found']);
+        }
+        $oldUpline = User::find($user->upline_id);
+
+        $role = $user->role;
+
+        if ($role == "member") {
+            if ($oldUpline) {
+
+                if ($newUpline->id == $oldUpline->id) {
+                    throw ValidationException::withMessages(['new_upline' => 'Upline cannot be the same']);
+                }
+
+                $oldUpline->decrement('direct_client');
+                $upline = $oldUpline;
+                while ($upline) {
+                    $upline->total_client -= ($user->total_client + 1);
+                    $upline->save();
+                    $upline = $upline->upline;
+                }
+            }
+            if ($user->upline_id != $newUpline->id) {
+
+                $newUpline->increment('direct_client');
+                $upline = $newUpline;
+                while ($upline) {
+                    $upline->total_client += ($user->total_client + 1);
+                    $upline->save();
+                    $upline = $upline->upline;
+                }
+
+                if (str_contains($newUpline->hierarchyList, $user->id)) {
+                    $newUpline->hierarchyList = $user->hierarchyList;
+                    $newUpline->upline_id = $user->upline_id;
+                    $newUpline->save();
+                }
+
+                if (empty($newUpline->hierarchyList)) {
+                    $user_hierarchy = "-" . $newUpline->id . "-";
+                } else {
+                    $user_hierarchy = $newUpline->hierarchyList . $newUpline->id . "-";
+                }
+
+
+                $this->updateHierarchyList($user, $user_hierarchy, '-' . $user->id . '-');
+
+                $user->hierarchyList = $user_hierarchy;
+                $user->upline_id = $newUpline->id;
+                $user->save();
+
+                // Update hierarchyList for users with same upline_referral_id
+                $sameUplineIdUsers = User::where('upline_id', $newUpline->id)->get();
+                if ($sameUplineIdUsers) {
+                    foreach ($sameUplineIdUsers as $sameUplineUser) {
+                        $new_user_hierarchy = $newUpline->hierarchyList . $newUpline->id . "-";
+
+                        if (!str_starts_with($new_user_hierarchy, '-')) {
+                            $new_user_hierarchy = '-' . $new_user_hierarchy;
+                        }
+
+                        $new_user_hierarchy .= $newUpline->id . '-';
+
+                        $this->updateHierarchyList($sameUplineUser, $new_user_hierarchy, "-" . $sameUplineUser->id . "-");
+                        $sameUplineUser->hierarchyList = $new_user_hierarchy;
+                        $sameUplineUser->upline_id = $newUpline->id;
+                        $sameUplineUser->save();
+                    }
+                }
+            }
+        }
+        return redirect()->back()->with('toast', 'Successfully Transfer');
+    }
+
+    private function updateHierarchyList($user, $list, $id)
+    {
+        $children = $user->downline;
+        if (count($children)) {
+            foreach ($children as $child) {
+                //$child->hierarchyList = substr($list, -1) . substr($child->hierarchyList, strpos($child->hierarchyList, $id) + strlen($id));
+                $child->hierarchyList = substr($list, 0, -1) . $id;
+                $child->save();
+                $this->updateHierarchyList($child, $list, $id . $child->id . '-');
+            }
+        }
     }
 }
