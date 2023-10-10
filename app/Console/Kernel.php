@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('announcements:check')
 //            ->dailyAt('00:00');
-        $schedule->command('update:trading-user')->everyThirtyMinutes();
+        $schedule->command('update:trading-user')->hourly();
     }
 
     /**
