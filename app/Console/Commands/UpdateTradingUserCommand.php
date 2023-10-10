@@ -14,14 +14,11 @@ class UpdateTradingUserCommand extends Command
 
     public function handle(): void
     {
-        $conn = (new CTraderService)->connectionStatus();
-        if ($conn['code'] == 0) {
-            try {
-                $tradingUsers = TradingUser::where('acc_status', 'Active')->whereNot('module', 'pamm')->get();
-                (new CTraderService)->getUserInfo($tradingUsers);
-            } catch (\Exception $e) {
-                \Log::error('CTrader Error');
-            }
+        try {
+            $tradingUsers = TradingUser::all();
+            (new CTraderService)->getUserInfo($tradingUsers);
+        } catch (\Exception $e) {
+            \Log::error('CTrader Error');
         }
     }
 }
