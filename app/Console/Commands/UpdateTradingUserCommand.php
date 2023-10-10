@@ -14,11 +14,7 @@ class UpdateTradingUserCommand extends Command
 
     public function handle(): void
     {
-        try {
-            $tradingUsers = TradingUser::all();
-            (new CTraderService)->getUserInfo($tradingUsers);
-        } catch (\Exception $e) {
-            \Log::error('CTrader Error');
-        }
+        $tradingUsers = TradingUser::all();
+        (new CTraderService)->getUserInfo($tradingUsers);
     }
 }
