@@ -677,4 +677,7 @@ return [
     "Error fetching rebate payout detail: " => "Error fetching rebate payout detail: ",
     "Approve all selected IB!" => "Approve all selected IB!",
     "An error occurred while refreshing the groups." => "An error occurred while refreshing the groups.",
+    "Name / Email / Account No" => "Name / Email / Account No",
+    "Search By Name / Email / Transaction ID / Account No" => "Search By Name / Email / Transaction ID / Account No",
+    "To Account" => "To Account",
 ];
