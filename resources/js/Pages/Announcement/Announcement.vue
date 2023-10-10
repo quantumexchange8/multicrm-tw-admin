@@ -227,7 +227,7 @@ const paginationActiveClass = [
                 <img class="rounded-t-lg h-96 w-full object-cover" :src="getMediaUrlByCollection(announcement, 'announcement_image')" alt="" />
                 <div class="p-5">
                     <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ announcement.title }}</h5>
-                    <p class="mb-3 font-normal text-xs text-gray-700 dark:text-gray-400">posted on {{ formatCustomDate(announcement.start_date) }}</p>
+                    <p class="mb-3 font-normal text-xs text-gray-700 dark:text-gray-400">{{ $t('public.posted on') }} {{ formatCustomDate(announcement.start_date) }}</p>
                     <AnnouncementDetails
                         :announcement="announcement"
                     />

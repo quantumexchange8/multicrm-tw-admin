@@ -89,12 +89,12 @@ class WithdrawalController extends Controller
                 'payment_charges' => null
             ]);
 
-            return redirect()->back()->with('toast', 'Successfully Updated Withdrawal Status');
+            return redirect()->back()->with('toast', trans('public.Successfully Updated Withdrawal Status'));
         } else {
             $user = User::find($payment->user_id);
             $user->cash_wallet += $payment->amount;
             $user->save();
         }
-        return redirect()->back()->with('toast', 'Successfully Rejected Withdrawal Request');
+        return redirect()->back()->with('toast', trans('public.Successfully Rejected Withdrawal Request'));
     }
 }

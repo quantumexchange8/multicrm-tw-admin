@@ -309,9 +309,9 @@ class IBController extends Controller
                     return redirect()->back()->with('toast', trans('public.Successfully Transfer'));
                 }
                 //no to no
-                return ['success' => false, 'message' => 'Invalid New Upline'];
+                return ['success' => false, 'message' => trans('public.Invalid New Upline')];
             }
         }
-        return ['success' => false, 'message' => 'Failed'];
+        return ['success' => false, 'message' => trans('public.Failed')];
     }
 }

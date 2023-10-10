@@ -6,6 +6,7 @@ import InputError from "@/Components/InputError.vue";
 import {useForm} from "@inertiajs/vue3";
 import {computed, ref} from "vue";
 import Button from "@/Components/Button.vue";
+import {trans} from "laravel-vue-i18n";
 
 const props = defineProps({
     accountTypes: Object,
@@ -53,7 +54,7 @@ const handleInputRadioClick = async () => {
         symbolGroupRates.value = response.data;
         loading.value = false; // Hide loading state after getting the response
     } catch (error) {
-        console.error('Error fetching group data:', error);
+        console.error(trans('public.Error fetching group data:'), error);
         loading.value = false; // Hide loading state in case of an error
     }
 };

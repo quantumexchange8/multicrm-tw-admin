@@ -8,6 +8,7 @@ import StructureRebate from "@/Pages/Member/RebateAllocation/StructureRebate.vue
 import Swal from "sweetalert2";
 import PayoutDetails from "@/Pages/Member/RebatePayout/PayoutDetails.vue";
 import Tooltip from "@/Components/Tooltip.vue";
+import {trans} from "laravel-vue-i18n";
 
 const props = defineProps({
     list: Object,
@@ -47,12 +48,12 @@ async function confirmRebatePayout(amount) {
     });
 
     const result = await swalWithBootstrapButtons.fire({
-        title: 'Are you sure?',
-        text: `A total of $${amount.toFixed(2)} will be paid to the selected IB!`,
+        title: trans('public.Are you sure?'),
+        text: trans('public.A total of') + ` $${amount.toFixed(2)} ` + trans('public.will be paid to the selected IB!'), 
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: trans('public.Confirm'),
+        cancelButtonText: trans('public.Cancel'),
         reverseButtons: true,
     });
 
@@ -78,13 +79,13 @@ async function rebate_payout() {
 
         if (response.data.success) {
             await Swal.fire({
-                title: 'Success',
+                title: trans('public.Success'),
                 text: response.data.message,
                 icon: 'success',
                 background: '#000000',
                 iconColor: '#ffffff',
                 color: '#ffffff',
-                confirmButtonText: 'OK',
+                confirmButtonText: trans('public.OK'),
                 buttonsStyling: false,
                 customClass: {
                     confirmButton: 'bg-blue-500 py-2 px-6 rounded-full text-white hover:bg-blue-600 focus:ring-blue-500',
@@ -99,13 +100,13 @@ async function rebate_payout() {
     } catch (error) {
         if (error.response && error.response.status === 422) {
             await Swal.fire({
-                title: 'Error',
+                title: trans('public.Error'),
                 text: error.response.data.message,
                 icon: 'error',
                 background: '#000000',
                 iconColor: '#ffffff',
                 color: '#ffffff',
-                confirmButtonText: 'OK',
+                confirmButtonText: trans('public.OK'),
                 buttonsStyling: false,
                 customClass: {
                     confirmButton: 'bg-blue-500 py-2 px-6 rounded-full text-white hover:bg-blue-600 focus:ring-blue-500',
@@ -113,13 +114,13 @@ async function rebate_payout() {
             });
         } else {
             await Swal.fire({
-                title: 'Error',
-                text: 'An error occurred while applying the rebate.',
+                title: trans('public.Error'),
+                text: trans('public.An error occurred while applying the rebate.'),
                 icon: 'error',
                 background: '#000000',
                 iconColor: '#ffffff',
                 color: '#ffffff',
-                confirmButtonText: 'OK',
+                confirmButtonText: trans('public.OK'),
                 buttonsStyling: false,
                 customClass: {
                     confirmButton: 'bg-blue-500 py-2 px-6 rounded-full text-white hover:bg-blue-600 focus:ring-blue-500',
@@ -150,7 +151,7 @@ const getRebatePayoutInfo = async () => {
         rebatePayoutDetails.value = response.data;
         loading.value = false; // Hide loading state after getting the response
     } catch (error) {
-        console.error('Error fetching rebate payout detail: ', error);
+        console.error(trans('public.Error fetching rebate payout detail: '), error);
         loading.value = false; // Hide loading state in case of an error
     }
 };

@@ -181,31 +181,31 @@ const paginationActiveClass = [
                     <thead class="text-xs font-bold text-gray-700 uppercase bg-gray-50 dark:bg-transparent dark:text-white text-center">
                     <tr>
                         <th scope="col" class="px-4 py-3">
-                            Name
+                            {{ $t('public.Name') }}
                         </th>
                         <th scope="col" class="px-4 py-3">
-                            Email
+                            {{ $t('public.Email') }}
                         </th>
                         <th v-if="originalType === 'bank'" scope="col" class="px-4 py-3">
-                            Bank Name
+                            {{ $t('public.Bank Name') }}
                         </th>
                         <th v-else-if="originalType === 'crypto'" scope="col" class="px-4 py-3">
-                            USDT Protocol Type
+                            {{ $t('public.USDT Protocol Type') }}
                         </th>
                         <th v-if="originalType === 'bank'" scope="col" class="px-4 py-3">
-                            Bank Holder Name
+                            {{ $t('public.Bank Holder Name') }}
                         </th>
                         <th v-if="originalType === 'bank'" scope="col" class="px-4 py-3">
-                            Bank Account No
+                            {{ $t('public.Bank Account No') }}
                         </th>
                         <th v-else-if="originalType === 'crypto'" scope="col" class="px-4 py-3">
-                            Token Address
+                            {{ $t('public.Token Address')}}
                         </th>
                         <th scope="col" class="px-4 py-3">
-                            Status
+                            {{ $t('public.Status') }}
                         </th>
                         <th scope="col" class="px-4 py-3">
-                            Action
+                            {{ $t('public.Action') }}
                         </th>
                     </tr>
                     </thead>

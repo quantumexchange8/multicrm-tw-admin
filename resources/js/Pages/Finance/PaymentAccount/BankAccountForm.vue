@@ -201,7 +201,7 @@ const toggleEdit = () => {
             <div class="space-y-2">
                 <Label for="country" :value="$t('public.Country')" />
 
-                <InputSelect v-model="form.country" class="block w-full text-sm" :disabled="!isEditing" placeholder="Select a country">
+                <InputSelect v-model="form.country" class="block w-full text-sm" :disabled="!isEditing" :placeholder="$t('public.Select a country')">
                     <option v-for="country in props.countries" :value="country.name_en" :key="country.id">{{ country.name_en }}</option>
                 </InputSelect>
 
@@ -210,7 +210,7 @@ const toggleEdit = () => {
             <div class="space-y-2">
                 <Label for="currency" :value="$t('public.Your Country Currency')" />
 
-                <InputSelect v-model="form.currency" class="block w-full text-sm" :disabled="!isEditing" placeholder="Select a currency">
+                <InputSelect v-model="form.currency" class="block w-full text-sm" :disabled="!isEditing" :placeholder="$t('public.Select a currency')">
                     <option value="VND">VND</option>
                     <option value="MYR">MYR</option>
                 </InputSelect>
@@ -225,7 +225,7 @@ const toggleEdit = () => {
                     id="front_identity"
                     type="text"
                     class="mt-1 block w-full cursor-pointer text-blue-500 dark:text-blue-500 hover:underline bg-white dark:bg-dark-eval-0"
-                    value="Click to view"
+                    :value="$t('public.Click to view')"
                     @click="openBankProofModal"
                     readonly
                 />
@@ -234,7 +234,7 @@ const toggleEdit = () => {
                     id="front_identity"
                     type="text"
                     class="mt-1 block w-full"
-                    value="Proof of Bank Account"
+                    :value="$t('public.Proof of Bank Account')"
                     disabled
                 />
 

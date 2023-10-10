@@ -52,7 +52,7 @@ const getIbDownlineRebateInfo = async () => {
         downlineGroupRates.value = response.data;
         loading.value = false; // Hide loading state after getting the response
     } catch (error) {
-        console.error('Error fetching ib downline: ', error);
+        console.error( trans('public.Error fetching ib downline: '), error);
         loading.value = false; // Hide loading state in case of an error
     }
 };

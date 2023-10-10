@@ -35,7 +35,7 @@ const handleNewIbRebateInfo = async () => {
         newIbRebateInfo.value = response.data;
         loading.value = false; // Hide loading state after getting the response
     } catch (error) {
-        console.error('Error fetching group data:', error);
+        console.error(trans('public.Error fetching group data:'), error);
         loading.value = false; // Hide loading state in case of an error
     }
 };

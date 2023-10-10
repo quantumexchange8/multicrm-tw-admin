@@ -83,7 +83,7 @@ const closeModal = () => {
                 <template v-if="downlineGroupRates.length === 0">
                     <tr>
                         <td colspan="8" class="text-center py-4">
-                            <span class="bg-indigo-100 text-indigo-800 text-md font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">No Downline Found</span>
+                            <span class="bg-indigo-100 text-indigo-800 text-md font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">{{ $t('public.No Downline Found') }}</span>
                         </td>
                     </tr>
                 </template>
