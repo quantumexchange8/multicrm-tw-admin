@@ -44,10 +44,13 @@ class HandleInertiaRequests extends Middleware
             },
             'csrf_token' => csrf_token(),
             'toast' => session('toast'),
+            'locale' => session('locale') ? session('locale') : app()->getLocale(),
             'totalApprovedDeposit' => $rightBarService->getTotalApprovedDeposit(),
             'totalPendingDeposit' => $rightBarService->getTotalPendingDeposit(),
             'totalApprovedWithdrawal' => $rightBarService->getTotalApprovedWithdrawal(),
             'totalPendingWithdrawal' => $rightBarService->getTotalPendingWithdrawal(),
+            'getTotalApprovedRebate' => $rightBarService->getTotalApprovedRebate(),
+            'getTotalPendingRebate' => $rightBarService->getTotalPendingRebate(),
         ]);
     }
 }

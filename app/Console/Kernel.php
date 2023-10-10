@@ -12,8 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('announcements:check')
-            ->dailyAt('00:00');
+//        $schedule->command('announcements:check')
+//            ->dailyAt('00:00');
+        $schedule->command('update:trading-user')->everyThirtyMinutes();
     }
 
     /**

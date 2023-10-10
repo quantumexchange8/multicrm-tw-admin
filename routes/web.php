@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\InternalTransferController;
 use App\Http\Controllers\PlatformConfigurationController;
 use App\Http\Controllers\SettingController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\NetworkController;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+Route::get('locale/{locale}', [GeneralController::class, 'setLang']);
 
 Route::middleware('auth')->middleware('role:admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -59,6 +61,7 @@ Route::middleware('auth')->middleware('role:admin')->group(function () {
         Route::get('/member_listing', [MemberController::class, 'member_listing'])->name('member.member_listing');
         Route::patch('/member_update', [MemberController::class, 'member_update'])->name('member.member_update');
         Route::post('/upgradeIb', [MemberController::class, 'upgradeIb'])->name('member.upgradeIb');
+        Route::post('/transfer_upline', [MemberController::class, 'transfer_upline'])->name('member.transfer_upline');
 
         Route::get('/member_tree', [NetworkController::class, 'member_tree'])->name('member.member_tree');
 
