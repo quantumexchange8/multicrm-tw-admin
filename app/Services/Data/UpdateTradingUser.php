@@ -15,20 +15,22 @@ class UpdateTradingUser
 
     public function updateTradingUser($meta_login, $data): TradingUser
     {
-         $tradingUser = TradingUser::query()->where('meta_login', $meta_login)->first();
+        $tradingUser = TradingUser::query()->where('meta_login', $meta_login)->first();
 
-        $tradingUser->meta_group = $data['groupName'];
-        $tradingUser->leverage = $data['leverageInCents'] / 100;
+        if (!empty($tradingUser))
+        {
+            $tradingUser->meta_group = $data['groupName'];
+            $tradingUser->leverage = $data['leverageInCents'] / 100;
 
-        $tradingUser->registration = $data['registrationTimestamp'];
-        $tradingUser->last_access = $data['lastUpdateTimestamp'];
-        $tradingUser->balance = $data['balance'] / 100;
-        $tradingUser->credit = $data['nonWithdrawableBonus'] / 100;
+            $tradingUser->registration = $data['registrationTimestamp'];
+            $tradingUser->last_access = $data['lastUpdateTimestamp'];
+            $tradingUser->balance = $data['balance'] / 100;
+            $tradingUser->credit = $data['nonWithdrawableBonus'] / 100;
 
-        DB::transaction(function () use ($tradingUser) {
-            $tradingUser->save();
-        });
-
+            DB::transaction(function () use ($tradingUser) {
+                $tradingUser->save();
+            });
+        }
 
         return $tradingUser;
     }
