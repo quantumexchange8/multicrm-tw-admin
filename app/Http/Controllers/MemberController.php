@@ -464,11 +464,9 @@ class MemberController extends Controller
         $search = $request->search;
         $requestDate = $request->date;
 
-        $dateRange = explode(' ~ ', $requestDate);
-
-        if (count($dateRange) === 2) {
-            $start_date = Carbon::createFromFormat('Y-m-d', $dateRange[0])->startOfDay();
-            $end_date = Carbon::createFromFormat('Y-m-d', $dateRange[1])->endOfDay();
+        if ($requestDate) {
+            $start_date = Carbon::createFromFormat('Y-m-d', $requestDate[0])->startOfDay();
+            $end_date = Carbon::createFromFormat('Y-m-d', $requestDate[1])->endOfDay();
             $query->whereBetween('closed_time', [$start_date, $end_date]);
         }
 

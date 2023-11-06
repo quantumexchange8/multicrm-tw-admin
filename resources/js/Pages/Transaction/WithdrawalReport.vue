@@ -90,7 +90,7 @@ const getResults = async (page = 1, type = '',  dateRange, search = '') => {
         pendingTransaction.value = response.data.withdrawals;
         transactionHistory.value = response.data.histories;
     } catch (error) {
-        console.error(error);
+        console.error(error.response.data);
     } finally {
         isLoading.value = false;
     }

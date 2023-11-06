@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class WithdrawalController extends Controller
@@ -81,6 +82,12 @@ class WithdrawalController extends Controller
         $payment->description = $request->comment;
         $payment->approval_date = Carbon::today();
         $payment->save();
+        
+        $data = [
+            'payment_id' => $payment->payment_id,
+            'payment_amount' => $payment->amount,
+            'title' => 'Withdrawal Request ' . $status,
+        ];
 
         if ($payment->status == "Successful") {
             $real_amount = $payment->amount;
@@ -94,6 +101,11 @@ class WithdrawalController extends Controller
             $user = User::find($payment->user_id);
             $user->cash_wallet += $payment->amount;
             $user->save();
+            $data = array_merge($data, ['first_name' => $user->first_name], ['email' => $user->email]);
+            Mail::send('emails', ['emailData' => $data], function ($message) use ($data) {
+                $message->to($data['email'])
+                    ->subject($data['title']);
+            });
         }
         return redirect()->back()->with('toast', trans('public.Successfully Rejected Withdrawal Request'));
     }

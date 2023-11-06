@@ -53,7 +53,7 @@ function handleKeyDown(event) {
 const reset = () => {
     const url = new URL(window.location.href);
     url.searchParams.delete('search');
-
+    url.searchParams.delete('date[]');
     // Navigate to the updated URL without the search parameter
     window.location.href = url.href;
 }
