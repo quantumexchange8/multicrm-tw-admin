@@ -19,6 +19,45 @@ import Badge from "@/Components/Badge.vue";
 import Loading from "@/Components/Loading.vue";
 
 const { getChannelName, formatDate, formatAmount, getStatusClass } = transactionFormat();
+const pendingTransaction = ref({data: []});
+const transactionHistory = ref({data: []});
+const type = ref('');
+const date = ref('');
+const search = ref('');
+const isLoading = ref(false);
+const currentPage = ref(1);
+
+const getResults = async (page = 1, type = '',  dateRange, search = '') => {
+    isLoading.value = true;
+    try {
+        let url = `/transaction/getPendingTransaction?page=${page}`;
+
+        if (type) {
+            url += `&type=${type}`;
+        }
+
+        if (dateRange) {
+            if (dateRange.length === 2) {
+                const formattedDates = dateRange.map(date => `date[]=${date}`).join('&');
+                url += `&${formattedDates}`;
+            }
+        }
+
+        if (search) {
+            url += `&search=${search}`;
+        }
+
+        const response = await axios.get(url);
+        pendingTransaction.value = response.data.withdrawals;
+        transactionHistory.value = response.data.histories;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        isLoading.value = false;
+    }
+}
+getResults();
+
 function refreshTable() {
     getResults();
 }
@@ -58,44 +97,6 @@ function handleKeyDown(event) {
     }
 }
 
-const pendingTransaction = ref({data: []});
-const transactionHistory = ref({data: []});
-const type = ref('');
-const date = ref('');
-const search = ref('');
-const isLoading = ref(false);
-const currentPage = ref(1);
-
-const getResults = async (page = 1, type = '',  dateRange, search = '') => {
-    isLoading.value = true;
-    try {
-        let url = `/transaction/getPendingTransaction?page=${page}`;
-
-        if (type) {
-            url += `&type=${type}`;
-        }
-
-        if (dateRange) {
-            if (dateRange.length === 2) {
-                const formattedDates = dateRange.map(date => `date[]=${date}`).join('&');
-                url += `&${formattedDates}`;
-            }
-        }
-
-        if (search) {
-            url += `&search=${search}`;
-        }
-
-        const response = await axios.get(url);
-        pendingTransaction.value = response.data.withdrawals;
-        transactionHistory.value = response.data.histories;
-    } catch (error) {
-        console.error(error.response.data);
-    } finally {
-        isLoading.value = false;
-    }
-}
-getResults();
 const reset = () => {
     getResults();
     date.value = '';

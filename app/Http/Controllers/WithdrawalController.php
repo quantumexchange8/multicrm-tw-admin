@@ -87,6 +87,7 @@ class WithdrawalController extends Controller
             'payment_id' => $payment->payment_id,
             'payment_amount' => $payment->amount,
             'title' => 'Withdrawal Request ' . $status,
+            'reason' => $payment->description,
         ];
 
         if ($payment->status == "Successful") {

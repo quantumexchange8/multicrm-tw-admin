@@ -10,11 +10,13 @@
         <br/>
         <p>Your withdrawal request, <span>{{ $emailData['payment_id'] }}</span> has been rejected.</p>
         <p>The withdrawal amount of ${{ $emailData['payment_amount'] }} has been returned to your cash wallet.</p>
+        <p>Reason: {{ $emailData['reason'] }}</p>
 
         <br/>
         <br/>
 
         <p>你的提款請求，<span>{{ $emailData['payment_id'] }}</span> 被拒绝了。</p>
-        <p>提款金額的 ${{ $emailData['payment_amount'] }} 已退回至你的現金錢包</p>
+        <p>提款金額的 ${{ $emailData['payment_amount'] }} 已退回至你的現金錢包。</p>
+        <p>原因：{{ $emailData['reason'] }}</p>
     </body>
 </html>
