@@ -63,7 +63,7 @@ class WithdrawalController extends Controller
 
         $histories =  $histories
             ->whereNot('status', 'Submitted')
-            ->orderByDesc('approval_date')
+            ->latest()
             ->paginate(10)
             ->withQueryString();
 
