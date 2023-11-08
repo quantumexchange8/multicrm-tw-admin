@@ -83,10 +83,14 @@ class WithdrawalController extends Controller
         $payment->approval_date = Carbon::today();
         $payment->save();
         
+        $user = User::find($payment->user_id);
         $data = [
+            'first_name' => $user->first_name,
+            'email' => $user->email,
             'payment_id' => $payment->payment_id,
             'payment_amount' => $payment->amount,
             'title' => 'Withdrawal Request ' . $status,
+            'status' => $status,
             'reason' => $payment->description,
         ];
 
@@ -96,18 +100,20 @@ class WithdrawalController extends Controller
                 'real_amount' => $real_amount,
                 'payment_charges' => null
             ]);
-
-            return redirect()->back()->with('toast', trans('public.Successfully Updated Withdrawal Status'));
+            $data['message-en'] = 'has been transferred to wallet address - ' . $payment->account_no;
+            $data['message-tw'] = '已轉入錢包地址 - ' . $payment->account_no;
         } else {
-            $user = User::find($payment->user_id);
             $user->cash_wallet += $payment->amount;
             $user->save();
-            $data = array_merge($data, ['first_name' => $user->first_name], ['email' => $user->email]);
-            Mail::send('emails', ['emailData' => $data], function ($message) use ($data) {
-                $message->to($data['email'])
-                    ->subject($data['title']);
-            });
+            $data['message-en'] = 'has been returned to your cash wallet.';
+            $data['message-tw'] = '已退回至你的現金錢包。';
         }
-        return redirect()->back()->with('toast', trans('public.Successfully Rejected Withdrawal Request'));
+        
+        Mail::send('emails', ['emailData' => $data], function ($message) use ($data) {
+            $message->to($data['email'])
+                ->subject($data['title']);
+        });
+
+        return redirect()->back()->with('toast', trans('public.Successfully Updated Withdrawal Status'));
     }
 }
