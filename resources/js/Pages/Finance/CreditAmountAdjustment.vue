@@ -73,6 +73,14 @@ watchEffect(() => {
     }
 });
 
+function calculateFloating(tradeAccount){
+    const balance = parseFloat(tradeAccount.balance) || 0;
+    const credit = parseFloat(tradeAccount.credit) || 0;
+    const equity = parseFloat(tradeAccount.equity) || 0;
+
+    return (balance + credit - equity);
+}
+
 const paginationClass = [
     'bg-transparent border-0 text-gray-500 text-xs'
 ];
@@ -175,6 +183,12 @@ const paginationActiveClass = [
                             {{ $t('public.Credit') }} (USD)
                         </th>
                         <th scope="col" class="px-4 py-3">
+                            {{ $t('public.Floating') }} (USD)
+                        </th>
+                        <th scope="col" class="px-4 py-3">
+                            {{ $t('public.Equity') }} (USD)
+                        </th>
+                        <th scope="col" class="px-4 py-3">
                             {{ $t('public.Action') }}
                         </th>
                     </tr>
@@ -199,6 +213,12 @@ const paginationActiveClass = [
                         </th>
                         <th>
                             {{ formatAmount(account.credit) }}
+                        </th>
+                        <th>
+                            {{ formatAmount(calculateFloating(account)) }}
+                        </th>
+                        <th>
+                            {{ formatAmount(account.equity) }}
                         </th>
                         <th class="px-6 py-2 font-thin rounded-r-full">
                             <Action

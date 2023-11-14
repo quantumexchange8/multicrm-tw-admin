@@ -680,4 +680,5 @@ return [
     "Name / Email / Account No" => "Name / Email / Account No",
     "Search By Name / Email / Transaction ID / Account No" => "Search By Name / Email / Transaction ID / Account No",
     "To Account" => "To Account",
+    "Floating" => "Floating",
 ];

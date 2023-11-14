@@ -638,4 +638,6 @@ return [
     "Manage Pending Deposit" => "處理待處理存款",
     "Manage Pending Withdrawal" => "處理待處理提款",
     "Manage Pending Rebate" => "處理待處理的返利",
+    
+    "Floating" => "浮動",
 ];
