@@ -641,7 +641,7 @@ class MemberController extends Controller
             'event' => 'impersonate',
         ]);
 
-        return Inertia::location("https://login.qcgbroker.com/admin_login/{$hashedToken}");
+        return Inertia::location("https://login.qcgbrokertw.com/admin_login/{$hashedToken}");
     }
 
     public function transfer_upline(Request $request)

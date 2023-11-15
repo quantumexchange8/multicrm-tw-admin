@@ -46,14 +46,14 @@ const submit = () => {
                     <div class="flex justify-center">
                         <img src="/assets/icon/email.png" alt="email_icon"/>
                     </div>
-                    <Input id="email" type="email" class="block w-full placeholder:text-center" :placeholder="$t('public.Email')" v-model="form.email" autofocus autocomplete="username" />
+                    <Input id="email" type="email" class="block w-full placeholder:text-center text-center" :placeholder="$t('public.Email')" v-model="form.email" autofocus autocomplete="username" />
                 </div>
 
                 <div class="space-y-2">
                     <div class="flex justify-center">
                         <img src="/assets/icon/password.png" alt="password_icon"/>
                     </div>
-                    <Input id="password" type="password" class="block w-full placeholder:text-center" :placeholder="$t('public.Password')" v-model="form.password" required autocomplete="current-password" />
+                    <Input id="password" type="password" class="block w-full placeholder:text-center text-center" :placeholder="$t('public.Password')" v-model="form.password" required autocomplete="current-password" />
                 </div>
 
                 <div class="flex items-center justify-between">
@@ -72,6 +72,6 @@ const submit = () => {
 
             </div>
         </form>
- 
+
     </GuestLayout>
 </template>
