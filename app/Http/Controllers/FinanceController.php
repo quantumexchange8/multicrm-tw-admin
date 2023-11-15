@@ -32,12 +32,8 @@ class FinanceController extends Controller
         $conn = (new CTraderService)->connectionStatus();
         if ($conn['code'] == 0) {
             try {
-                TradingUser::where('acc_status', 'Active')
-                    ->whereNot('module', 'pamm')
-                    ->select('id', 'meta_login')
-                    ->chunk(100, function ($users) {
-                        (new CTraderService)->getUserInfo($users);
-                    });
+                $tradingUsers = TradingUser::where('acc_status', 'Active')->where('remarks', 'TW Test Trading Group')->whereNot('module', 'pamm')->get();
+                (new CTraderService)->getUserInfo($tradingUsers);
             } catch (\Exception $e) {
                 \Log::error('CTrader Error');
             }
