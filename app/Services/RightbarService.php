@@ -56,4 +56,13 @@ class RightbarService
             ->whereDate('created_at', Carbon::now())
             ->sum('revenue');
     }
+
+    public function getPendingWithdrawalCount()
+    {
+        return Payment::query()
+            ->where('category', 'payment')
+            ->where('type', 'Withdrawal')
+            ->where('status', 'Submitted')
+            ->count();
+    }
 }
