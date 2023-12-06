@@ -10,38 +10,33 @@ import {library} from "@fortawesome/fontawesome-svg-core";
 import InputIconWrapper from "@/Components/InputIconWrapper.vue";
 import {faRotateRight, faSearch, faX} from "@fortawesome/free-solid-svg-icons";
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
-import {useForm} from "@inertiajs/vue3";
 library.add(faSearch,faX,faRotateRight);
 
 const props = defineProps({
-    lists: Object,
-    histories: Object,
     filters: Object,
 })
 const formatter = ref({
     date: 'YYYY-MM-DD',
     month: 'MM'
 });
+
+const date = ref('');
+const search = ref('');
+const isLoading = ref(false);
+const refresh = ref(false);
+
 const activeComponent = ref("pending"); // 'pending' is initially active
 
 const setActiveComponent = (component) => {
     activeComponent.value = component;
 };
 
-const form = useForm({
-    search: props.filters.search,
-    date: props.filters.date
-})
-
-const submitSearch = () => {
-    form.get(route('member.rebate_payout'), {
-        preserveScroll: true,
-        preserveState: true,
-    })
+function submitSearch() {
+    refreshTable();
 };
 
 function clearField() {
-    form.search = '';
+    search.value = '';
 }
 
 function handleKeyDown(event) {
@@ -50,13 +45,17 @@ function handleKeyDown(event) {
     }
 }
 
-const reset = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('search');
-    url.searchParams.delete('date[]');
-    // Navigate to the updated URL without the search parameter
-    window.location.href = url.href;
+function refreshTable() {
+    isLoading.value = !isLoading.value;
+    refresh.value = true;
 }
+
+const reset = () => {
+    date.value = '';
+    search.value = '';
+    refreshTable();
+}
+
 </script>
 
 <template>
@@ -85,7 +84,7 @@ const reset = () => {
                                 aria-hidden="true"
                             />
                         </template>
-                        <Input withIcon id="name" type="text" :placeholder="$t('public.Search by IB name or IB number')" class="block w-full" v-model="form.search" @keydown="handleKeyDown" />
+                        <Input withIcon id="name" type="text" :placeholder="$t('public.Search by IB name or IB number')" class="block w-full" v-model="search" @keydown="handleKeyDown" />
                     </InputIconWrapper>
                     <button type="submit" class="absolute right-1 bottom-2 py-2.5 text-gray-500 hover:text-dark-eval-4 font-medium rounded-full w-8 h-8 text-sm"><font-awesome-icon
                         icon="fa-solid fa-x"
@@ -99,7 +98,7 @@ const reset = () => {
                 <div class="col-span-2">
                     <vue-tailwind-datepicker
                         :formatter="formatter"
-                        v-model="form.date"
+                        v-model="date"
                         input-classes="py-2 border-gray-400 w-full rounded-full text-sm placeholder:text-sm focus:border-gray-400 focus:ring focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:border-gray-600 dark:bg-[#202020] dark:text-gray-300 dark:focus:ring-offset-dark-eval-1 disabled:dark:bg-dark-eval-0 disabled:dark:text-dark-eval-4"
                     />
                 </div>
@@ -108,7 +107,6 @@ const reset = () => {
                         variant="primary-opacity"
                         class="justify-center"
                         @click.prevent="submitSearch"
-                        :disabled="form.processing"
                     >
                         {{ $t('public.Search') }}
                     </Button>
@@ -149,13 +147,21 @@ const reset = () => {
             <div class="relative overflow-x-auto sm:rounded-lg">
                 <PendingPayout
                     v-if="activeComponent === 'pending'"
-                    :lists="lists"
-                    :date="form.date"
+                    :search="search"
+                    :date="date"
+                    :refresh="refresh"
+                    :isLoading="isLoading"
+                    @update:loading="isLoading = $event"
+                    @update:refresh="refresh = $event"
                 />
                 <PayoutHistory
                     v-if="activeComponent === 'history'"
-                    :rebatePayoutHistory="props.histories"
-                    :date="form.date"
+                    :search="search"
+                    :date="date"
+                    :refresh="refresh"
+                    :isLoading="isLoading"
+                    @update:loading="isLoading = $event"
+                    @update:refresh="refresh = $event"
                 />
             </div>
         </div>

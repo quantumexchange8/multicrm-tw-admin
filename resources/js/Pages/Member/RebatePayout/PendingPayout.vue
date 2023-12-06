@@ -1,28 +1,95 @@
 <script setup>
 import Action from "@/Pages/Member/RebatePayout/Action.vue";
 import Checkbox from "@/Components/Checkbox.vue";
-import {computed, ref, watch} from "vue";
+import {computed, ref, watch , watchEffect} from "vue";
 import Button from "@/Components/Button.vue";
 import Swal from "sweetalert2";
-import Paginator from "@/Components/Paginator.vue";
 import {trans} from "laravel-vue-i18n";
+import {TailwindPagination} from "laravel-vue-pagination";
+import Loading from "@/Components/Loading.vue";
+import {usePage} from "@inertiajs/vue3";
 
 const props = defineProps({
-    lists: Object,
-    date: String
+    search: String,
+    date: String,
+    refresh: Boolean,
+    isLoading: Boolean,
 })
 
+const lists = ref({data: []});
+const currentPage = ref(1);
+const refreshPending = ref(props.refresh);
+const pendingLoading = ref(props.isLoading);
+const emit = defineEmits(['update:loading', 'update:refresh']);
 const selectAllChecked = ref(false);
 const selectedItems = ref([]);
 
+watchEffect(() => {
+    if (usePage().props.toast !== null) {
+        getResults();
+    }
+});
+
+const getResults = async (page = 1, dateRange = '', search = '') => {
+    pendingLoading.value = true;
+    try {
+        let url = `/member/getPendingRebatePayout?page=${page}`;
+
+        if (dateRange) {
+            if (dateRange.length === 2) {
+                const formattedDates = dateRange.map(date => `${date}`).join(' ~ ');
+                url += `&date=${formattedDates}`;
+            }
+        }
+
+        if (search) {
+            url += `&search=${search}`;
+        }
+
+        const response = await axios.get(url);
+        lists.value = response.data.payoutPending;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        pendingLoading.value = false;
+        emit('update:loading', false);
+    }
+}
+getResults();
+watch(() => props.refresh, (newVal) => {
+    refreshPending.value = newVal;
+    if (newVal) {
+        const dateRange = props.date.split(' ~ ');
+        // Call the getResults function when refresh is true
+        getResults(1, dateRange, props.search);
+        emit('update:refresh', false);
+    }
+});
+
+const handlePageChange = (newPage) => {
+    if (newPage >= 1) {
+        currentPage.value = newPage;
+        const dateRange = props.date.split(' ~ ');
+        getResults(currentPage.value, dateRange, props.search);
+    }
+};
+
+const paginationClass = [
+    'bg-transparent border-0 text-gray-500 text-xs'
+];
+
+const paginationActiveClass = [
+    'dark:bg-transparent border-0 text-[#FF9E23] dark:text-[#FF9E23] !font-bold text-xs'
+];
+
 // Watch for changes in selectedItems array and update selectAllChecked accordingly
 watch(selectedItems, () => {
-    selectAllChecked.value = selectedItems.value.length === props.lists.data.length;
+    selectAllChecked.value = selectedItems.value.length ===  lists.data.length;
 });
 
 function toggleAllCheckboxes() {
     if (selectAllChecked.value) {
-        selectedItems.value = props.lists.data.map((list) => ({
+        selectedItems.value = lists.data.map((list) => ({
             ib_account_types_id: list.ib_account_types_id,
             closed_date: list.date, // Add the closed_date from the list
         }));
@@ -142,7 +209,10 @@ async function approveSelectedRebatePayout() {
 </script>
 
 <template>
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <div v-if="pendingLoading" class="w-full flex justify-center my-12">
+        <Loading />
+    </div>
+    <table v-else class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead class="text-xs font-bold text-gray-700 uppercase bg-gray-50 dark:bg-transparent dark:text-white text-center">
         <tr>
             <th scope="col" class="px-6 py-3">
@@ -189,22 +259,22 @@ async function approveSelectedRebatePayout() {
                 />
             </th>
             <th>
-                 {{ list.date }}
+                {{ list.date }}
             </th>
             <th class="px-6 py-4">
-                 {{ list.of_user.first_name }}
+                {{ list.of_user.first_name }}
             </th>
             <th>
-                 {{ list.meta_login }}
+                {{ list.meta_login }}
             </th>
             <th>
-                 {{ (list.of_account_type.name ) }}
+                {{ (list.of_account_type.name ) }}
             </th>
             <th>
-                 {{ list.total_volume.toFixed(2) }}
+                {{ list.total_volume.toFixed(2) }}
             </th>
             <th>
-                 {{ list.total_revenue.toFixed(2) }}
+                {{ list.total_revenue.toFixed(2) }}
             </th>
             <th class="px-6 py-2 font-thin rounded-r-full">
                 <Action
@@ -216,12 +286,20 @@ async function approveSelectedRebatePayout() {
         </tr>
         </tbody>
     </table>
-    <div class="flex justify-end mt-4">
-        <Paginator :links="props.lists.links" />
+    <div class="flex justify-end mt-4" v-if="!pendingLoading">
+        <TailwindPagination
+            :item-classes=paginationClass
+            :active-classes=paginationActiveClass
+            :data="lists"
+            :limit=1
+            :keepLength="true"
+            @pagination-change-page="handlePageChange"
+        />
     </div>
     <div class="flex justify-end">
         <Button
             v-if="showConfirmButton"
+            variant="success"
             class="float-right text-xs"
             @click="confirmAction"
         >

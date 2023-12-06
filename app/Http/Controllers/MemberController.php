@@ -457,6 +457,13 @@ class MemberController extends Controller
 
     public function rebate_payout(Request $request)
     {
+        return Inertia::render('Member/RebatePayout', [
+            'filters' => \Request::only(['search', 'date'])
+        ]);
+    }
+
+    public function getPendingRebatePayout(Request $request)
+    {
         $query = TradingAccountRebateRevenue::query()
             ->whereRelation('ofUser', 'role', 'ib')
             ->whereNot('revenue', 0);
@@ -464,16 +471,18 @@ class MemberController extends Controller
         $search = $request->search;
         $requestDate = $request->date;
 
-        if ($requestDate) {
-            $start_date = Carbon::createFromFormat('Y-m-d', $requestDate[0])->startOfDay();
-            $end_date = Carbon::createFromFormat('Y-m-d', $requestDate[1])->endOfDay();
+        $dateRange = explode(' ~ ', $requestDate);
+
+        if (count($dateRange) === 2) {
+            $start_date = Carbon::createFromFormat('Y-m-d', $dateRange[0])->startOfDay();
+            $end_date = Carbon::createFromFormat('Y-m-d', $dateRange[1])->endOfDay();
             $query->whereBetween('closed_time', [$start_date, $end_date]);
         }
 
         if ($search) {
             $query->whereRelation('ofUser', function ($query) use ($search) {
-                $query->where('first_name', '=', $search)
-                    ->orWhere('ib_id', '=', $search);
+                $query->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('ib_id', 'like', '%' . $search . '%');
             });
         }
 
@@ -483,6 +492,7 @@ class MemberController extends Controller
             ->select( DB::raw('DATE(closed_time) as date'), 'trading_account_rebate_revenue.ib_account_types_id', 'trading_account_rebate_revenue.user_id', 'trading_account_rebate_revenue.account_type', 'trading_account_rebate_revenue.meta_login', DB::raw('sum(volume) as total_volume'), DB::raw('sum(revenue) as total_revenue'))
             ->groupBy(['date', 'ib_account_types_id', 'user_id', 'account_type', 'meta_login'])
             ->with(['ofUser', 'ofAccountType'])
+            ->orderByDesc('date')
             ->paginate(10)
             ->withQueryString();
 
@@ -490,13 +500,13 @@ class MemberController extends Controller
             ->select('trading_account_rebate_revenue.ib_account_types_id', 'trading_account_rebate_revenue.user_id', 'trading_account_rebate_revenue.account_type', 'trading_account_rebate_revenue.meta_login', DB::raw('sum(volume) as total_volume'), DB::raw('sum(revenue) as total_revenue'), DB::raw('DATE(closed_time) as date'))
             ->groupBy(['ib_account_types_id', 'user_id', 'account_type', 'date', 'meta_login'])
             ->with(['ofUser', 'ofAccountType'])
+            ->orderByDesc('date')
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Member/RebatePayout', [
-            'lists' => $lists,
-            'histories' => $histories,
-            'filters' => \Request::only(['search', 'date'])
+        return response()->json([
+            'payoutPending' => $lists,
+            'payoutHistory' => $histories
         ]);
     }
 
