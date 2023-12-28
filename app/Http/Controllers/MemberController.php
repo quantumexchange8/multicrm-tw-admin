@@ -173,8 +173,15 @@ class MemberController extends Controller
             $ib->save();
 
             $symbolGroups = $request->ibGroupRates;
-            foreach ($symbolGroups as $id => $value) {
+            for ($i = 1; $i <= 7; $i++) {
+                if (!isset($symbolGroups[$i])) {
+                    $symbolGroups[$i] = 0;
+                }
+            }
 
+            ksort($symbolGroups);
+
+            foreach ($symbolGroups as $id => $value) {
                 IbAccountTypeSymbolGroupRate::create([
                     'ib_account_type' => $ib->id,
                     'symbol_group' => $id,
